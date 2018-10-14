@@ -30,6 +30,7 @@ class App extends Component {
     ]
   };
 
+  // Handles removing of player
   handleRemovePlayer = (id) => {
     this.setState( prevState => {
       return {
@@ -38,6 +39,7 @@ class App extends Component {
     });
   }
 
+  // Handles updating of score for each player
   handleScore = (index, delta) => {
     this.setState( prevState => {
       return {
@@ -46,15 +48,18 @@ class App extends Component {
     });
   }
 
-  handleAddPlayer = ( value ) => {
+  // Handles adding a new player to scoreboard
+  handleAddPlayer = ( name ) => {
     this.setState( prevState => {
-      let newPlayer = {
-        name: value,
-        score: 0,
-        id: prevState.players.length + 1
-      }
       return {
-        players: [ ...prevState.players, newPlayer ]
+        players: [
+          ...prevState.players,
+          {
+            name, // When key and value match, can drop value
+            score: 0,
+            id: prevState.players.length + 1
+          }
+        ]
       }
     });
   }
