@@ -9,6 +9,7 @@ class App extends Component {
     players: [
       {
         name: "Guil",
+        // "Score" state is initialized in players array!
         score: 0,
         id: 1
       },
@@ -39,10 +40,28 @@ class App extends Component {
     });
   }
 
-  // Handles updating of score for each player
-  handleScore = (index, delta) => {
+  // Gets highscore if there is one.
+  getHighScore = () => {
+    const scores = this.state.players.map( p => p.score )
+    const highScore = Math.max(...scores);
+    if (highScore) {
+      return highScore;
+    }
+    return null;
+  }
+
+  // Handles updating of score for each player.
+  // We list "score" state of Counter component to App.
+  /* When I first created the Counter component the score was a local
+    state of Counter. But since we need the state info in Header Component
+    to display total amount of score for all players, we "lifted state" to
+    parent component (App). The increment/decrement of score now has to be
+    handles by App.
+  */
+  handleScoreChange = (index, delta) => {
     this.setState( prevState => {
       return {
+        // Don't quite understand why I can call it whatever I want..
         score: prevState.players[index].score += delta
       }
     });
@@ -57,18 +76,23 @@ class App extends Component {
           {
             name, // When key and value match, can drop value
             score: 0,
-            id: prevState.players.length + 1
+            id: this.prevPlayerId += 1
           }
         ]
       }
     });
   }
 
+  // player id Counter
+  prevPlayerId = 4;
+
   render() {
+    const highScore = this.getHighScore();
+
     return (
       <div className="scoreboard">
         <Header
-          title="Scoreboard"
+          title="My Scoreboard"
           players={this.state.players}
         />
 
@@ -80,8 +104,10 @@ class App extends Component {
             id={player.id}
             key={player.id.toString()}
             index={index}
-            changeScore={this.handleScore}
+            changeScore={this.handleScoreChange}
             removePlayer={this.handleRemovePlayer}
+            // If high score is players score.
+            isHighScore={highScore === player.score}
           />
         )}
 
